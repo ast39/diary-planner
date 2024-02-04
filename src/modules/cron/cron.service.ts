@@ -15,7 +15,10 @@ export class CronService {
 
   private readonly logger = new Logger(CronService.name);
 
-  @Cron(CronExpression.EVERY_DAY_AT_8PM)
+  @Cron(CronExpression.EVERY_DAY_AT_8PM, {
+    name: 'notifications',
+    timeZone: 'Europe/Paris',
+  })
   async handleCron() {
     this.logger.debug('Send notifies to users');
     const tasks = await this.taskService.getAllOpenedTasks();

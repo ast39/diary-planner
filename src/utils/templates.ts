@@ -10,7 +10,7 @@ export const showList = (tasks) =>
         (task.status == 1 ? '✅' : '📌') +
         ' ' +
         task.title +
-        '\n\n',
+        '\n',
     )
     .join('')}`;
 
