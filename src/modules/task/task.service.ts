@@ -45,6 +45,10 @@ export class TaskService {
 
   // Получить 1 задачу
   async getOne(taskId: number): Promise<TaskDto> {
+    if (isNaN(taskId)) {
+      throw new TaskNotFoundException();
+    }
+
     const task = await this.dataSource
       .getRepository(TaskEntity)
       .createQueryBuilder('task')
