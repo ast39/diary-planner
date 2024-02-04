@@ -1,11 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AppUpdate } from './app.update';
+import { AppWatching } from './app.watching';
 import { TelegrafModule } from 'nestjs-telegraf';
 import * as LocalSession from 'telegraf-session-local';
 import { join } from 'path';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TaskModule } from './modules/task/task.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { CronModule } from './modules/cron/cron.module';
 
 const sessions = new LocalSession({
   database: 'session_db.json',
@@ -32,9 +34,11 @@ const sessions = new LocalSession({
       migrations: [join(__dirname, '**', '*.migration.{ts,js}')],
       synchronize: true,
     }),
+    ScheduleModule.forRoot(),
+    CronModule,
     TaskModule,
   ],
   controllers: [],
-  providers: [AppUpdate],
+  providers: [AppWatching],
 })
 export class AppModule {}

@@ -4,10 +4,11 @@ import { DataSource } from 'typeorm';
 import { CreateTaskDto } from './dto/task-create.dto';
 import { TaskDto } from './dto/task.dto';
 import { TaskEntity } from './entities/task.entity';
-import { TaskNotFoundException } from '../../utils/exceptions';
-import { SuccessResponseDto } from '../../utils/answers';
 import { TaskRepository } from './task.repository';
 import { UpdateTaskDto } from './dto/task-update.dto';
+import { StatusEnum } from '../../shared/enums/status.enum';
+import { TaskNotFoundException } from '../../shared/exceptions';
+import { SuccessResponseDto } from '../../shared/dto/SuccessResponseDto';
 
 @Injectable()
 export class TaskService {
@@ -122,6 +123,21 @@ export class TaskService {
       return {
         success: true,
       };
+    });
+  }
+
+  // Получить список невыполненных задач задач, сгруппированных по пользователям
+  async getAllOpenedTasks(): Promise<TaskDto[]> {
+    return await this.dataSource.transaction(async (transaction) => {
+      const tasks = await transaction
+        .getRepository(TaskEntity)
+        .createQueryBuilder('task')
+        .where({ status: StatusEnum.opened })
+        .orderBy('user_id')
+        .orderBy('user_task_id')
+        .getMany();
+
+      return tasks.map((task) => this.responseLikeDto(task));
     });
   }
 

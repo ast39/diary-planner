@@ -14,6 +14,11 @@ export const showList = (tasks) =>
     )
     .join('')}`;
 
+export const notify = (tasks) =>
+  `У вас все еще есть невыполненные задачи:\n\n${tasks
+    .map((task) => task.userTaskId + ': ' + task.title + '\n')
+    .join('')}`;
+
 export function actionButtons() {
   return Markup.keyboard(
     [

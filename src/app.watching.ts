@@ -1,29 +1,21 @@
-import {
-  Ctx,
-  Hears,
-  InjectBot,
-  Message,
-  On,
-  Start,
-  Update,
-} from 'nestjs-telegraf';
-import { Telegraf } from 'telegraf';
+import { Ctx, Hears, Message, On, Start, Update } from 'nestjs-telegraf';
 import { TaskService } from './modules/task/task.service';
 import { ButtonsEnum } from './utils/buttons.enum';
-import { BtnContextInterface } from './utils/interfaces';
 import { actionButtons, showList } from './utils/templates';
+import { BtnContextInterface } from './shared/interfaces';
 
 @Update()
-export class AppUpdate {
-  constructor(
-    @InjectBot() private readonly bot: Telegraf<BtnContextInterface>,
-    private readonly taskService: TaskService,
-  ) {}
+export class AppWatching {
+  constructor(private readonly taskService: TaskService) {}
 
   // Инициализация бота
   @Start()
   async startCommand(ctx: BtnContextInterface) {
-    await ctx.reply('Привет, я помогу тебе не забыть о важных делах!');
+    await ctx.reply(
+      'Привет, ' +
+        ctx.from.first_name +
+        '! Я помогу тебе не забыть о важных делах!',
+    );
     await ctx.reply('Выбери действие в меню', actionButtons());
   }
 
